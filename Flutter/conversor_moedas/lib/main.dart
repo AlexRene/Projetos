@@ -11,6 +11,7 @@ const request =
 void main() async {
   runApp(MaterialApp(
     home: const Home(),
+    theme: ThemeData(hintColor: Colors.amber, primaryColor: Colors.white),
   ));
 }
 
