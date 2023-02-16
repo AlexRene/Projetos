@@ -10,7 +10,7 @@ const request =
 
 void main() async {
   runApp(MaterialApp(
-    home: const Home(),
+    home: Home(),
     theme: ThemeData(hintColor: Colors.amber, primaryColor: Colors.white),
   ));
 }
