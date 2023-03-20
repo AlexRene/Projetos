@@ -21,7 +21,7 @@ class _HomePageState extends State<HomePage> {
     http.Response response;
 
     //Requisição dos melhores gifs do momento se for null
-    if (_search == null) {
+    if (_search != null) {
       //Fazendo uma requisição para a API retornar os gifs
       response = await http.get(Uri.parse(url));
     } else {
@@ -56,8 +56,8 @@ class _HomePageState extends State<HomePage> {
       ),
       backgroundColor: Colors.black,
       body: Column(
-        children: const [
-          Padding(
+        children: [
+          const Padding(
             padding: EdgeInsets.all(10.0),
             child: TextField(
               decoration: InputDecoration(
@@ -70,9 +70,55 @@ class _HomePageState extends State<HomePage> {
               style: TextStyle(color: Colors.white, fontSize: 18.0),
               textAlign: TextAlign.center,
             ),
+          ),
+          Expanded(
+            child: FutureBuilder(
+              future: _getGifs(),
+              builder: (context, snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.waiting:
+                  case ConnectionState.none:
+                    return Container(
+                      width: 200.0,
+                      height: 200.0,
+                      alignment: Alignment.center,
+                      child: const CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        strokeWidth: 5.0,
+                      ),
+                    );
+                  default:
+                    if (snapshot.hasError) {
+                      return Container();
+                    } else {
+                      return _createGifTable(context, snapshot);
+                    }
+                }
+              },
+            ),
           )
         ],
       ),
     );
+  }
+
+  Widget _createGifTable(BuildContext context, AsyncSnapshot snapshot) {
+    return GridView.builder(
+        padding: const EdgeInsets.all(10.0),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 10.0,
+          mainAxisSpacing: 10.0,
+        ),
+        itemCount: snapshot.data["data"].length,
+        itemBuilder: (context, index) {
+          return GestureDetector(
+            child: Image.network(
+              snapshot.data["data"][index]["images"]["fixed_height"]["url"],
+              height: 300.0,
+              fit: BoxFit.cover,
+            ), //Caminho para o gif
+          );
+        });
   }
 }
