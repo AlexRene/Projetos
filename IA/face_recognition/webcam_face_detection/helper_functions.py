@@ -1,7 +1,4 @@
-import cv2
-import numpy as np
-
-def resize_video(width, height, max_width = 600):
+def resize_video(width, height, max_width = 800):
   # max_width = in pixels. define the maximum width of the processed video.
   # the height will be proportional (defined in the calculations below)
 
